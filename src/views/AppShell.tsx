@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Mic } from "lucide-react";
 
@@ -27,9 +28,14 @@ export function AppShell({ email }: { email: string }) {
               Video Speed Reader
             </span>
           </span>
-          <Button size="sm" variant="outline" className="rounded-full" onClick={signOut}>
-            Sign out
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button asChild size="sm" className="rounded-full">
+              <Link href="/upload">Upload</Link>
+            </Button>
+            <Button size="sm" variant="outline" className="rounded-full" onClick={signOut}>
+              Sign out
+            </Button>
+          </div>
         </div>
       </header>
       <main className="hero-glow flex-1">
