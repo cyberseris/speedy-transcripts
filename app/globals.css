@@ -1,5 +1,10 @@
 @import "tailwindcss" source(none);
 @source "../src";
+/* M1: the App Router adds .tsx under app/, which Tailwind must also scan.
+   Without this, classes used only in app/*.tsx (e.g. app/error.tsx) are never
+   generated. This is the ONLY change to M0's stylesheet -- every design token,
+   color, font and custom class below is byte-for-byte as M0 left it. */
+@source "../app";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));

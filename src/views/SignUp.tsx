@@ -1,14 +1,16 @@
-import { Link, useNavigate } from "react-router-dom";
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AuthShell } from "@/components/AuthShell";
-import { PageMeta } from "@/components/PageMeta";
 
 export function SignUp() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +32,7 @@ export function SignUp() {
       return;
     }
     if (data.session) {
-      navigate("/app");
+      router.push("/app");
     } else {
       setNotice("Check your email to confirm your account, then sign in.");
     }
@@ -43,16 +45,12 @@ export function SignUp() {
       footer={
         <>
           Already have an account?{" "}
-          <Link to="/signin" className="text-primary hover:underline">
+          <Link href="/sign-in" className="text-primary hover:underline">
             Sign in / 登入
           </Link>
         </>
       }
     >
-      <PageMeta
-        title="Create your account — Video Speed Reader"
-        description="Create a free Video Speed Reader account and turn videos into transcripts."
-      />
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>

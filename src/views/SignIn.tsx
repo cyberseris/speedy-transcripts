@@ -1,14 +1,16 @@
-import { Link, useNavigate } from "react-router-dom";
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AuthShell } from "@/components/AuthShell";
-import { PageMeta } from "@/components/PageMeta";
 
 export function SignIn() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -24,7 +26,7 @@ export function SignIn() {
       setError(error.message);
       return;
     }
-    navigate("/app");
+    router.push("/app");
   }
 
   return (
@@ -34,16 +36,12 @@ export function SignIn() {
       footer={
         <>
           Don't have an account?{" "}
-          <Link to="/signup" className="text-primary hover:underline">
+          <Link href="/sign-up" className="text-primary hover:underline">
             Sign up
           </Link>
         </>
       }
     >
-      <PageMeta
-        title="Sign in — Video Speed Reader"
-        description="Sign in to Video Speed Reader to manage your transcripts."
-      />
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>

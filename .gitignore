@@ -26,3 +26,7 @@ dist
 *.njsproj
 *.sln
 *.sw?
+
+# Next.js build output
+.next
+next-env.d.ts

@@ -1,8 +1,9 @@
-import { Link } from "react-router-dom";
+"use client";
+
+import Link from "next/link";
 import { AudioLines, Mail, Mic, Sparkles, Timer, ShieldCheck, UploadCloud } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 import { Button } from "@/components/ui/button";
-import { PageMeta } from "@/components/PageMeta";
 
 const steps = [
   {
@@ -63,14 +64,9 @@ const waveHeights = [38, 72, 55, 90, 62, 40, 84, 58, 70, 46, 66, 34];
 export function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <PageMeta
-        title="Video Speed Reader — Transcripts in three minutes"
-        description="Upload your video and get an accurate Chinese or English transcript in three minutes. Built for creators, educators, and engineers."
-        ogDescription="Upload your video, get a clean transcript in three minutes. High-accuracy, commercial-use ready."
-      />
       <header className="sticky top-0 z-20 border-b border-border/70 bg-background/85 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-          <Link to="/" className="flex items-center gap-2.5">
+          <Link href="/" className="flex items-center gap-2.5">
             <span className="flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
               <Mic className="size-4.5" />
             </span>
@@ -80,10 +76,10 @@ export function Landing() {
           </Link>
           <div className="flex items-center gap-2">
             <Button asChild variant="ghost" size="sm" className="rounded-full">
-              <Link to="/signin">登入</Link>
+              <Link href="/sign-in">登入</Link>
             </Button>
             <Button asChild size="sm" className="rounded-full">
-              <Link to="/signup">免費開始</Link>
+              <Link href="/sign-up">免費開始</Link>
             </Button>
           </div>
         </div>
@@ -122,10 +118,10 @@ export function Landing() {
                 </p>
                 <div className="mt-9 flex flex-wrap gap-3">
                   <Button asChild size="lg" className="rounded-full shadow-[var(--shadow-glow)]">
-                    <Link to="/signup">免費開始 · Get started</Link>
+                    <Link href="/sign-up">免費開始 · Get started</Link>
                   </Button>
                   <Button asChild size="lg" variant="outline" className="rounded-full">
-                    <Link to="/signin">登入</Link>
+                    <Link href="/sign-in">登入</Link>
                   </Button>
                 </div>
                 <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">

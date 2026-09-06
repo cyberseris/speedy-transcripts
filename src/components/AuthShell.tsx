@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Mic } from "lucide-react";
 import type { ReactNode } from "react";
 
@@ -25,7 +25,7 @@ export function AuthShell({
       />
 
       <header className="relative mx-auto w-full max-w-6xl px-5 py-4">
-        <Link to="/" className="flex items-center gap-2.5">
+        <Link href="/" className="flex items-center gap-2.5">
           <span className="flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
             <Mic className="size-4.5" />
           </span>
