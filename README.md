@@ -68,3 +68,19 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+## Supabase Setup
+
+Auth is backed by a user-owned Supabase project (not Lovable Cloud). Create a
+`.env` file (see `.env.example`) with:
+
+```
+VITE_SUPABASE_PROJECT_ID=<your-project-ref>
+VITE_SUPABASE_PUBLISHABLE_KEY=<your-publishable-key>
+VITE_SUPABASE_URL=https://<your-project-ref>.supabase.co
+```
+
+`VITE_SUPABASE_PUBLISHABLE_KEY` is Supabase's newer `sb_publishable_*` key —
+the browser-safe, RLS-gated equivalent of the old anon key. These values also
+need to be set as environment variables in Lovable's project settings (and/or
+Vercel, if deployed there), since `.env` is not committed to git.
