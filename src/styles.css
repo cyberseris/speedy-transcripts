@@ -142,3 +142,69 @@
     color: var(--color-foreground);
   }
 }
+
+/* ---- Video Speed Reader design system (dark violet) ---- */
+:root {
+  --radius: 0.75rem;
+  --background: oklch(0.14 0.02 285);
+  --foreground: oklch(0.97 0.005 285);
+  --card: oklch(0.18 0.022 286);
+  --card-foreground: oklch(0.97 0.005 285);
+  --popover: oklch(0.18 0.022 286);
+  --popover-foreground: oklch(0.97 0.005 285);
+  --primary: oklch(0.62 0.21 295);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.24 0.03 288);
+  --secondary-foreground: oklch(0.97 0.005 285);
+  --muted: oklch(0.24 0.025 288);
+  --muted-foreground: oklch(0.72 0.02 286);
+  --accent: oklch(0.28 0.06 294);
+  --accent-foreground: oklch(0.97 0.005 285);
+  --destructive: oklch(0.62 0.22 25);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.62 0.21 295);
+  --gradient-hero: radial-gradient(
+      1000px 520px at 50% -10%,
+      oklch(0.62 0.21 295 / 0.28),
+      transparent 70%
+    );
+  --shadow-glow: 0 0 60px -12px oklch(0.62 0.21 295 / 0.55);
+}
+
+@theme inline {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --shadow-glow: var(--shadow-glow);
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+@utility hero-glow {
+  background-image: var(--gradient-hero);
+}
+
+@utility text-gradient {
+  background-image: linear-gradient(
+    100deg,
+    oklch(0.98 0.005 285),
+    oklch(0.72 0.18 295)
+  );
+  background-clip: text;
+  color: transparent;
+}
+
+@utility reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+  &[data-visible="true"] {
+    opacity: 1;
+    transform: none;
+  }
+}
