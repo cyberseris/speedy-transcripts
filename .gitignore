@@ -30,3 +30,10 @@ dist
 # Next.js build output
 .next
 next-env.d.ts
+
+# EC2-side virtualenv (created by M1 prereq, never committed)
+worker/venv/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
