@@ -11,6 +11,11 @@ node_modules
 dist
 *.local
 
+# Environment variables (never commit — see .env.example)
+.env
+.env.*
+!.env.example
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
