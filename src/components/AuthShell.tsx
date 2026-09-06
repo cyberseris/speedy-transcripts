@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Mic } from "lucide-react";
 import type { ReactNode } from "react";
 
 export function AuthShell({
@@ -13,15 +14,29 @@ export function AuthShell({
   footer: ReactNode;
 }) {
   return (
-    <div className="hero-glow flex min-h-screen flex-col bg-background text-foreground">
-      <header className="mx-auto w-full max-w-6xl px-5 py-4">
-        <Link to="/" className="text-base font-semibold tracking-tight">
-          Video Speed Reader
+    <div className="hero-glow relative flex min-h-screen flex-col overflow-hidden bg-background text-foreground">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-20 -left-24 size-72 rounded-full bg-sun/35 blur-3xl"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -bottom-24 -right-20 size-80 rounded-full bg-teal/25 blur-3xl"
+      />
+
+      <header className="relative mx-auto w-full max-w-6xl px-5 py-4">
+        <Link to="/" className="flex items-center gap-2.5">
+          <span className="flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
+            <Mic className="size-4.5" />
+          </span>
+          <span className="font-display text-lg font-semibold tracking-tight">
+            Video Speed Reader
+          </span>
         </Link>
       </header>
-      <main className="flex flex-1 items-center justify-center px-5 py-10">
-        <div className="w-full max-w-sm rounded-xl border border-border bg-card p-7">
-          <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+      <main className="relative flex flex-1 items-center justify-center px-5 py-10">
+        <div className="blob-card w-full max-w-sm border border-border bg-card p-8 shadow-[var(--shadow-soft)]">
+          <h1 className="font-display text-2xl font-semibold tracking-tight">{title}</h1>
           <p className="mt-2 mb-6 text-sm text-muted-foreground">{subtitle}</p>
           {children}
           <p className="mt-6 text-center text-sm text-muted-foreground">{footer}</p>

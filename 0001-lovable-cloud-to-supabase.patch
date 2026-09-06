@@ -1,0 +1,72 @@
+From c0b611fcee444c76d8e266e4f20ddcc276a54f6f Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sun, 6 Sep 2026 09:14:52 +0000
+Subject: [PATCH] Switch backend from Lovable Cloud to user-owned Supabase
+ project
+
+- Point supabase/config.toml at the new project ref
+- Drop the Lovable Cloud reference from the missing-env-var error message
+- Document Supabase env var setup in README (values go in .env, which
+  also need to be set in Lovable/Vercel project settings since .env
+  is gitignored)
+
+Sign Up / Sign In / Sign Out flow is unchanged - only the backend
+Supabase project the client points to has changed.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01Fo6cj2BsrTmGj1rpWjrXrY
+---
+ README.md                           | 16 ++++++++++++++++
+ src/integrations/supabase/client.ts |  2 +-
+ supabase/config.toml                |  2 +-
+ 3 files changed, 18 insertions(+), 2 deletions(-)
+
+diff --git a/README.md b/README.md
+index 83e97a5..5e58069 100644
+--- a/README.md
++++ b/README.md
+@@ -68,3 +68,19 @@ cd <repository-name>
+ npm i
+ npm run dev
+ ```
++
++## Supabase Setup
++
++Auth is backed by a user-owned Supabase project (not Lovable Cloud). Create a
++`.env` file (see `.env.example`) with:
++
++```
++VITE_SUPABASE_PROJECT_ID=<your-project-ref>
++VITE_SUPABASE_PUBLISHABLE_KEY=<your-publishable-key>
++VITE_SUPABASE_URL=https://<your-project-ref>.supabase.co
++```
++
++`VITE_SUPABASE_PUBLISHABLE_KEY` is Supabase's newer `sb_publishable_*` key —
++the browser-safe, RLS-gated equivalent of the old anon key. These values also
++need to be set as environment variables in Lovable's project settings (and/or
++Vercel, if deployed there), since `.env` is not committed to git.
+diff --git a/src/integrations/supabase/client.ts b/src/integrations/supabase/client.ts
+index a31b44c..186f180 100644
+--- a/src/integrations/supabase/client.ts
++++ b/src/integrations/supabase/client.ts
+@@ -41,7 +41,7 @@ function createSupabaseClient() {
+       ...(!SUPABASE_URL ? ["SUPABASE_URL"] : []),
+       ...(!SUPABASE_PUBLISHABLE_KEY ? ["SUPABASE_PUBLISHABLE_KEY"] : []),
+     ];
+-    const message = `Missing Supabase environment variable(s): ${missing.join(", ")}. Connect Supabase in Lovable Cloud.`;
++    const message = `Missing Supabase environment variable(s): ${missing.join(", ")}. Set them in your .env file (see .env.example).`;
+     console.error(`[Supabase] ${message}`);
+     throw new Error(message);
+   }
+diff --git a/supabase/config.toml b/supabase/config.toml
+index 7a36d27..cf2eb5d 100644
+--- a/supabase/config.toml
++++ b/supabase/config.toml
+@@ -1 +1 @@
+-project_id = "lmqfktmeijtcmhplsfsj"
+\ No newline at end of file
++project_id = "sxwvtqrdmhmfijyisljv"
+\ No newline at end of file
+-- 
+2.43.0
+

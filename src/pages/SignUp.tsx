@@ -77,7 +77,7 @@ export function SignUp() {
         </div>
         {error && <p className="text-sm text-destructive">{error}</p>}
         {notice && <p className="text-sm text-primary">{notice}</p>}
-        <Button type="submit" className="w-full" disabled={loading}>
+        <Button type="submit" className="w-full rounded-full" disabled={loading}>
           {loading ? "Creating account…" : "Sign up"}
         </Button>
       </form>
