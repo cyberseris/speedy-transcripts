@@ -1,27 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { Sparkles, Timer, ShieldCheck } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 import { Button } from "@/components/ui/button";
-
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Video Speed Reader — Transcripts in three minutes" },
-      {
-        name: "description",
-        content:
-          "Upload your video and get an accurate Chinese or English transcript in three minutes. Built for creators, educators, and engineers.",
-      },
-      { property: "og:title", content: "Video Speed Reader — Transcripts in three minutes" },
-      {
-        property: "og:description",
-        content:
-          "Upload your video, get a clean transcript in three minutes. High-accuracy, commercial-use ready.",
-      },
-    ],
-  }),
-  component: Landing,
-});
+import { PageMeta } from "@/components/PageMeta";
 
 const features = [
   {
@@ -44,9 +25,14 @@ const features = [
   },
 ];
 
-function Landing() {
+export function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <PageMeta
+        title="Video Speed Reader — Transcripts in three minutes"
+        description="Upload your video and get an accurate Chinese or English transcript in three minutes. Built for creators, educators, and engineers."
+        ogDescription="Upload your video, get a clean transcript in three minutes. High-accuracy, commercial-use ready."
+      />
       <header className="sticky top-0 z-20 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
           <span className="text-base font-semibold tracking-tight">Video Speed Reader</span>
@@ -66,9 +52,7 @@ function Landing() {
               <h1 className="text-gradient mt-6 text-4xl font-bold tracking-tight sm:text-6xl">
                 Video Speed Reader
               </h1>
-              <p className="mt-6 text-xl font-medium sm:text-2xl">
-                上傳影片，三分鐘內拿到逐字稿。
-              </p>
+              <p className="mt-6 text-xl font-medium sm:text-2xl">上傳影片，三分鐘內拿到逐字稿。</p>
               <p className="mt-3 text-base text-muted-foreground">
                 Upload your video, get a clean transcript in three minutes.
               </p>

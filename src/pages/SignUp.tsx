@@ -1,30 +1,13 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AuthShell } from "./signin";
+import { AuthShell } from "@/components/AuthShell";
+import { PageMeta } from "@/components/PageMeta";
 
-export const Route = createFileRoute("/signup")({
-  head: () => ({
-    meta: [
-      { title: "Create your account — Video Speed Reader" },
-      {
-        name: "description",
-        content: "Create a free Video Speed Reader account and turn videos into transcripts.",
-      },
-      { property: "og:title", content: "Create your account — Video Speed Reader" },
-      {
-        property: "og:description",
-        content: "Create a free Video Speed Reader account and turn videos into transcripts.",
-      },
-    ],
-  }),
-  component: SignUp,
-});
-
-function SignUp() {
+export function SignUp() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -47,7 +30,7 @@ function SignUp() {
       return;
     }
     if (data.session) {
-      navigate({ to: "/app" });
+      navigate("/app");
     } else {
       setNotice("Check your email to confirm your account, then sign in.");
     }
@@ -66,6 +49,10 @@ function SignUp() {
         </>
       }
     >
+      <PageMeta
+        title="Create your account — Video Speed Reader"
+        description="Create a free Video Speed Reader account and turn videos into transcripts."
+      />
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
