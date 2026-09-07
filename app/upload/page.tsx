@@ -22,30 +22,61 @@ export default async function UploadPage() {
 
   if (!user) redirect("/sign-in");
 
-  // RLS already scopes this to the caller; the explicit filter documents intent.
-  // job_sessions is joined only to learn whether a cached summary exists -- the
-  // text itself stays out of the list payload.
-  const { data } = await supabase
+  // Two queries on purpose, no embedded select.
+  //
+  // `jobs` and `job_sessions` are joined by TWO foreign keys -- job_sessions.job_id
+  // -> jobs.id, and jobs.current_session_id -> job_sessions.id. PostgREST cannot
+  // pick one on its own, so `job_sessions(...)` embedded in this select fails with
+  // an ambiguous-relationship error and returns no rows at all.
+  //
+  // RLS already scopes these to the caller; the explicit filter documents intent.
+  const { data: jobRows, error: jobsError } = await supabase
     .from("jobs")
-    .select("id, created_at, video_source_url, status, job_sessions(summary_text)")
+    .select("id, created_at, video_source_url, status, current_session_id")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .limit(20);
+
+  // Never swallow this again: an empty list should be an empty list, not a
+  // failed query wearing one as a disguise.
+  if (jobsError) console.error("jobs query failed", jobsError);
 
   type RawJob = {
     id: string;
     created_at: string;
     video_source_url: string;
     status: string;
-    job_sessions?: { summary_text: string | null }[] | null;
+    current_session_id: string | null;
   };
 
-  const jobs: JobRow[] = ((data ?? []) as RawJob[]).map((row: RawJob) => ({
-    id: row.id,
-    created_at: row.created_at,
-    video_source_url: row.video_source_url,
-    status: row.status,
-    has_summary: Boolean(row.job_sessions?.some((s) => s.summary_text)),
+  const rawJobs = (jobRows ?? []) as RawJob[];
+
+  // Which of those sessions already have a cached summary. The text itself
+  // stays out of the list payload.
+  const sessionIds = rawJobs
+    .map((job) => job.current_session_id)
+    .filter((id): id is string => Boolean(id));
+
+  const summarised = new Set<string>();
+  if (sessionIds.length > 0) {
+    const { data: sessionRows, error: sessionsError } = await supabase
+      .from("job_sessions")
+      .select("id, summary_text")
+      .in("id", sessionIds);
+
+    if (sessionsError) console.error("job_sessions query failed", sessionsError);
+
+    for (const row of (sessionRows ?? []) as { id: string; summary_text: string | null }[]) {
+      if (row.summary_text) summarised.add(row.id);
+    }
+  }
+
+  const jobs: JobRow[] = rawJobs.map((job) => ({
+    id: job.id,
+    created_at: job.created_at,
+    video_source_url: job.video_source_url,
+    status: job.status,
+    has_summary: Boolean(job.current_session_id && summarised.has(job.current_session_id)),
   }));
 
   return (
