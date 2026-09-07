@@ -17,9 +17,34 @@ import os
 import boto3
 from supabase import create_client
 
-SUPABASE_URL = os.environ["SUPABASE_URL"]
-SUPABASE_SECRET_KEY = os.environ["SUPABASE_SECRET_KEY"]
-OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+_SECRET_IDS = {
+    "SUPABASE_URL": "supabase-url",
+    "SUPABASE_SECRET_KEY": "supabase-secret-key",
+    "OPENAI_API_KEY": "openai-api-key",
+}
+
+
+def _load_secrets() -> dict[str, str]:
+    """Env vars win; otherwise pull from Secrets Manager at cold start.
+
+    Keeping the three credentials out of the Lambda's plaintext configuration
+    means only the execution role can reach them. They are still forwarded to
+    the Fargate task as env (worker.py is env-first), so the worker task role
+    stays minimal.
+    """
+    if all(os.environ.get(k) for k in _SECRET_IDS):
+        return {k: os.environ[k] for k in _SECRET_IDS}
+    sm = boto3.client("secretsmanager")
+    return {
+        k: sm.get_secret_value(SecretId=v)["SecretString"]
+        for k, v in _SECRET_IDS.items()
+    }
+
+
+_secrets = _load_secrets()
+SUPABASE_URL = _secrets["SUPABASE_URL"]
+SUPABASE_SECRET_KEY = _secrets["SUPABASE_SECRET_KEY"]
+OPENAI_API_KEY = _secrets["OPENAI_API_KEY"]
 
 ECS_CLUSTER = os.environ["ECS_CLUSTER"]
 TASK_DEFINITION = os.environ["TASK_DEFINITION"]
