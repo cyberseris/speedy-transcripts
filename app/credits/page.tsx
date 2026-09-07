@@ -75,9 +75,14 @@ export default async function CreditsPage({
     const price = Number(row.price_usd);
     const credits = Number(row.credits);
     const rate = price / credits;
+    // "How many MORE credits than the baseline tier buys per dollar" -- $30 at
+    // the $1.00/cr baseline would be 30 credits, this tier gives 45, so +50%.
+    // The skill's formula measures the same deal as a per-credit discount and
+    // renders +33%; the tier table it ships with says +50%. Bonus-credits is
+    // the framing the course advertises and the one users read as the offer.
     const bonusPct =
-      baselineRate && baselineRate > 0
-        ? Math.round((1 - rate / baselineRate) * 100)
+      baselineRate && baselineRate > 0 && rate > 0
+        ? Math.round((baselineRate / rate - 1) * 100)
         : 0;
     return { id: row.id, name: row.name, credits, price_usd: price, bonusPct };
   });

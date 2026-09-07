@@ -34,9 +34,12 @@ export async function POST(req: Request) {
   const origin =
     req.headers.get("origin") ?? process.env["NEXT_PUBLIC_SITE_URL"] ?? "";
 
+  // No payment_method_types here on purpose. Stripe's Managed Payments is on by
+  // default for new accounts and rejects the parameter outright:
+  //   "Unsupported parameter: payment_method_types ... handles this for you"
+  // Stripe picks the methods; card (incl. 4242 4242 4242 4242) is still offered.
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
-    payment_method_types: ["card"],
     line_items: [{ price: product.stripe_price_id, quantity: 1 }],
     success_url: `${origin}/credits?purchase=success`,
     cancel_url: `${origin}/credits?purchase=cancelled`,
