@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Download, Mic } from "lucide-react";
+import { Download } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { AppHeader } from "@/components/AppHeader";
 import { UploadForm } from "@/views/UploadForm";
 import { createClient } from "@/lib/supabase/server";
 
@@ -63,21 +64,7 @@ export default async function UploadPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <header className="border-b border-border/70 bg-background/85 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-5 py-4">
-          <Link href="/app" className="flex items-center gap-2.5">
-            <span className="flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
-              <Mic className="size-4.5" />
-            </span>
-            <span className="font-display text-base font-semibold tracking-tight">
-              Video Speed Reader
-            </span>
-          </Link>
-          <Button asChild size="sm" variant="outline" className="rounded-full">
-            <Link href="/app">Dashboard</Link>
-          </Button>
-        </div>
-      </header>
+      <AppHeader />
 
       <main className="hero-glow flex-1">
         <div className="mx-auto max-w-5xl space-y-8 px-5 py-14">

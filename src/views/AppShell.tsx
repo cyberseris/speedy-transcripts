@@ -7,7 +7,13 @@ import { Mic } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 
-export function AppShell({ email }: { email: string }) {
+export function AppShell({
+  email,
+  credits,
+}: {
+  email: string;
+  credits: number | null;
+}) {
   const router = useRouter();
 
   async function signOut() {
@@ -29,6 +35,15 @@ export function AppShell({ email }: { email: string }) {
             </span>
           </span>
           <div className="flex items-center gap-2">
+            {credits !== null ? (
+              <Link
+                href="/credits"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium transition-colors hover:border-primary/40"
+              >
+                <span className="text-muted-foreground">Credits</span>
+                <span className="font-mono font-semibold text-foreground">{credits}</span>
+              </Link>
+            ) : null}
             <Button asChild size="sm" className="rounded-full">
               <Link href="/upload">Upload</Link>
             </Button>

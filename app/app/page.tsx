@@ -19,5 +19,16 @@ export default async function AppPage() {
 
   if (!user) redirect("/sign-in");
 
-  return <AppShell email={user.email ?? ""} />;
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("credits_balance")
+    .eq("id", user.id)
+    .single();
+
+  return (
+    <AppShell
+      email={user.email ?? ""}
+      credits={profile ? Number(profile.credits_balance) : null}
+    />
+  );
 }

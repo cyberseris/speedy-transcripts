@@ -37,3 +37,8 @@ worker/venv/
 # Python bytecode
 __pycache__/
 *.py[cod]
+
+m1-step1-vite-to-nextjs.patch
+m1-step5-worker.patch
+m1-steps-2-3-4.patch
+m1-vercel-output-dir-fix.patch

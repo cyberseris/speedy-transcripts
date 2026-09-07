@@ -3,5 +3,5 @@
   "framework": "nextjs",
   "buildCommand": null,
   "outputDirectory": null,
-  "installCommand": null
+  "installCommand": "bun install --no-frozen-lockfile"
 }

@@ -24,6 +24,23 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "video_source_url required" }, { status: 400 });
   }
 
+  // Fast floor check: block the obvious "no credits at all" case at submit so
+  // the user gets instant feedback. The precise video-duration-vs-balance
+  // comparison happens on the worker, which is the only place the duration is
+  // actually known.
+  const { data: creditProfile } = await supabase
+    .from("profiles")
+    .select("credits_balance")
+    .eq("id", user.id)
+    .single();
+
+  if (!creditProfile || Number(creditProfile.credits_balance) < 1) {
+    return NextResponse.json(
+      { error: "insufficient credits — please buy more at /credits" },
+      { status: 402 },
+    );
+  }
+
   // 2. Insert with the Supabase Secret key. The caller is already authenticated
   //    above; the secret key bypasses RLS so the job + session rows go in
   //    without policy ping-pong. user_id is taken from the verified session --
