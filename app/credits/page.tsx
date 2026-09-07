@@ -57,13 +57,29 @@ export default async function CreditsPage({
     .order("created_at", { ascending: false })
     .limit(50);
 
-  const rows = productRows ?? [];
+  type ProductRow = {
+    id: string;
+    name: string;
+    credits: number;
+    price_usd: number;
+    stripe_price_id: string | null;
+  };
+  type TxRow = {
+    id: string;
+    amount: number;
+    type: string;
+    description: string | null;
+    created_at: string;
+  };
+
+  const rows: ProductRow[] = (productRows ?? []) as ProductRow[];
+  const txs: TxRow[] = (transactions ?? []) as TxRow[];
 
   // Baseline = the tier with the fewest credits. Every other tier's bonus is
   // measured against its $/credit, so the discount story stays correct even if
   // the tiers get re-priced later by SQL.
   const baseline = rows.reduce<{ price_usd: number; credits: number } | null>(
-    (cheapest, row) =>
+    (cheapest: { price_usd: number; credits: number } | null, row: ProductRow) =>
       cheapest === null || Number(row.credits) < Number(cheapest.credits)
         ? { price_usd: Number(row.price_usd), credits: Number(row.credits) }
         : cheapest,
@@ -71,7 +87,7 @@ export default async function CreditsPage({
   );
   const baselineRate = baseline ? baseline.price_usd / baseline.credits : null;
 
-  const products: CreditProduct[] = rows.map((row) => {
+  const products: CreditProduct[] = rows.map((row: ProductRow) => {
     const price = Number(row.price_usd);
     const credits = Number(row.credits);
     const rate = price / credits;
@@ -91,7 +107,7 @@ export default async function CreditsPage({
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <AppHeader />
+      <AppHeader current="/credits" />
 
       <main className="mx-auto w-full max-w-5xl flex-1 px-5 py-10">
         {purchase === "success" ? (
@@ -122,7 +138,7 @@ export default async function CreditsPage({
         <h2 className="font-display mt-12 mb-5 text-2xl font-semibold tracking-tight">
           History
         </h2>
-        {transactions && transactions.length > 0 ? (
+        {txs.length > 0 ? (
           <div className="overflow-x-auto rounded-xl border border-border">
             <table className="w-full min-w-[36rem] text-left text-sm">
               <thead className="border-b border-border bg-muted/40 text-muted-foreground">
@@ -134,7 +150,7 @@ export default async function CreditsPage({
                 </tr>
               </thead>
               <tbody>
-                {transactions.map((tx) => (
+                {txs.map((tx: TxRow) => (
                   <tr key={tx.id} className="border-b border-border/60 last:border-0">
                     <td className="px-4 py-3 text-muted-foreground">
                       {formatDate(tx.created_at)}

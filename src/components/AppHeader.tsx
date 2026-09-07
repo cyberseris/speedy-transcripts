@@ -1,13 +1,18 @@
 import Link from "next/link";
 import { Mic } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { SignOutButton } from "@/components/SignOutButton";
 import { createClient } from "@/lib/supabase/server";
 
-// Shared header. M0/M1 left an inline <header> in each page; this replaces them
-// so the credits balance has exactly one place to live. Re-renders on every
-// server navigation, which is enough -- /credits also refreshes after checkout.
-export async function AppHeader({ dashboardLink = true }: { dashboardLink?: boolean }) {
+const NAV = [
+  { href: "/app", label: "Dashboard" },
+  { href: "/upload", label: "Transcriptions" },
+  { href: "/credits", label: "Credits" },
+];
+
+// Shared app chrome. M0/M1 left an inline <header> in each page; this is the one
+// place the nav and the credit balance live now.
+export async function AppHeader({ current }: { current?: string }) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -25,7 +30,7 @@ export async function AppHeader({ dashboardLink = true }: { dashboardLink?: bool
 
   return (
     <header className="border-b border-border/70 bg-background/85 backdrop-blur">
-      <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-5 py-4">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-4">
         <Link href="/app" className="flex items-center gap-2.5">
           <span className="flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
             <Mic className="size-4.5" />
@@ -34,24 +39,36 @@ export async function AppHeader({ dashboardLink = true }: { dashboardLink?: bool
             Video Speed Reader
           </span>
         </Link>
-        <div className="flex items-center gap-2">
+
+        <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+          <nav className="flex items-center gap-4 text-sm">
+            {NAV.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={current === item.href ? "page" : undefined}
+                className={
+                  current === item.href
+                    ? "font-medium text-foreground"
+                    : "text-muted-foreground transition-colors hover:text-foreground"
+                }
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+
           {balance !== null ? (
-            <Link
-              href="/credits"
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium transition-colors hover:border-primary/40"
-            >
+            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs">
               <span className="text-muted-foreground">Credits</span>
               <span className="font-mono font-semibold text-foreground">{balance}</span>
-            </Link>
+              <Link href="/credits" className="font-medium text-primary hover:underline">
+                Buy more
+              </Link>
+            </span>
           ) : null}
-          <Button asChild size="sm" variant="outline" className="rounded-full">
-            <Link href="/credits">Buy more</Link>
-          </Button>
-          {dashboardLink ? (
-            <Button asChild size="sm" variant="outline" className="rounded-full">
-              <Link href="/app">Dashboard</Link>
-            </Button>
-          ) : null}
+
+          <SignOutButton />
         </div>
       </div>
     </header>

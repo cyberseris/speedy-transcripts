@@ -41,7 +41,7 @@ export async function POST(req: Request) {
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
     line_items: [{ price: product.stripe_price_id, quantity: 1 }],
-    success_url: `${origin}/credits?purchase=success`,
+    success_url: `${origin}/credits/success`,
     cancel_url: `${origin}/credits?purchase=cancelled`,
     client_reference_id: user.id,
     metadata: {

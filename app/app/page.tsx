@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
+import { AppHeader } from "@/components/AppHeader";
 import { AppShell } from "@/views/AppShell";
 import { createClient } from "@/lib/supabase/server";
 
@@ -19,16 +20,10 @@ export default async function AppPage() {
 
   if (!user) redirect("/sign-in");
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("credits_balance")
-    .eq("id", user.id)
-    .single();
-
   return (
-    <AppShell
-      email={user.email ?? ""}
-      credits={profile ? Number(profile.credits_balance) : null}
-    />
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
+      <AppHeader current="/app" />
+      <AppShell email={user.email ?? ""} />
+    </div>
   );
 }
