@@ -26,7 +26,17 @@ def _get_secret(client, name: str) -> str:
 
 
 def _load_secrets() -> dict[str, str]:
-    """Pull the three M1 secrets from AWS Secrets Manager."""
+    """Load the three secrets, preferring env vars over AWS Secrets Manager.
+
+    M4 / Fargate: the Lambda distributor injects all three via
+    RunTask containerOverrides[].environment, and the worker task role is
+    intentionally minimal (no secretsmanager:GetSecretValue), so env comes first.
+    M1 / EC2: no env vars are set, so we fall back to Secrets Manager via the
+    instance profile. The same image therefore runs unchanged in both.
+    """
+    keys = ("OPENAI_API_KEY", "SUPABASE_URL", "SUPABASE_SECRET_KEY")
+    if all(os.environ.get(k) for k in keys):
+        return {k: os.environ[k] for k in keys}
     sm = boto3.client("secretsmanager")
     return {
         "OPENAI_API_KEY": _get_secret(sm, "openai-api-key"),
